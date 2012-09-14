@@ -9,7 +9,7 @@ use ExtUtils::MakeMaker 6.30;
 
 
 my %WriteMakefileArgs = (
-  "ABSTRACT" => "Test whether one JSON structure entails another",
+  "ABSTRACT" => "Test whether one JSON or Perl structure entails/subsumes another",
   "AUTHOR" => "Jakob Voss",
   "BUILD_REQUIRES" => {
     "Test::Builder::Tester" => 0,
@@ -31,7 +31,7 @@ my %WriteMakefileArgs = (
     "strict" => 0,
     "warnings" => 0
   },
-  "VERSION" => "0.1",
+  "VERSION" => "0.2",
   "test" => {
     "TESTS" => "t/*.t"
   }

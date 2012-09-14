@@ -2,13 +2,13 @@ use strict;
 use warnings;
 package Test::JSON::Entails;
 {
-  $Test::JSON::Entails::VERSION = '0.1';
+  $Test::JSON::Entails::VERSION = '0.2';
 }
-#ABSTRACT: Test whether one JSON structure entails another
+#ABSTRACT: Test whether one JSON or Perl structure entails/subsumes another
 
 
 use base 'Test::Builder::Module';
-our @EXPORT = qw(entails);
+our @EXPORT = qw(entails subsumes);
 
 use Carp;
 use JSON::Any;
@@ -67,6 +67,8 @@ sub _hash_entails {
     return;
 }
 
+*subsumes = *entails;
+
 sub _array_entails {
     my ($got, $expect, $path) = @_;
 
@@ -119,11 +121,11 @@ __END__
 
 =head1 NAME
 
-Test::JSON::Entails - Test whether one JSON structure entails another
+Test::JSON::Entails - Test whether one JSON or Perl structure entails/subsumes another
 
 =head1 VERSION
 
-version 0.1
+version 0.2
 
 =head1 SYNOPSIS
 
@@ -132,22 +134,27 @@ version 0.1
   entails $json, { foo => 1 }, "JSON contains a foo element with value 1";
   entails $json, '{}', "JSON is a valid JSON object (no array)";
 
+  my $bar = { foo => 42, bar => 23 };
+  my $foo = { foo => 42 };
+
+  subsumes $bar => $foo, 'bar subsumes foo';  # $foo and $bar may be blessed
+
 =head1 DESCRIPTION
 
 Sometimes you want to compare JSON objects not for exact equivalence but for
 whether one structure subsumes the other. The other way round, one structure
 can be I<entailed> by another. For instance
 
-    { "foo": 1, "bar": [ "x"  }
+    { "foo": 1, "bar": [ "x" ] }
 
 is entailed by any of the following structures:
 
     { "foo": 1, "bar": [ "x" ], "doz": 2 }       # additional hash element
     { "foo": 1, "bar": [ "x", "y" ], "doz": 2 }  # additional array element
 
-This module exports the testing method C<entails> to check such entailments.
-You can pass both, JSON strings with encoded JSON objects, and Perl hash
-references.
+This module exports the testing method C<entails> and its alias C<subsumes> to
+check such entailments.  You can pass, JSON strings with encoded JSON objects,
+Perl hash references, and blessed hash references.
 
 =head1 LIMITATIONS
 
@@ -167,7 +174,7 @@ Jakob Voss
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Jakob Voss.
+This software is copyright (c) 2012 by Jakob Voss.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
